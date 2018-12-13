@@ -9,7 +9,6 @@ import numpy as np
 
 from common.arguments import parse_args
 import torch
-
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -53,7 +52,7 @@ for subject in dataset.subjects():
         positions_3d = []
         for cam in anim['cameras']:
             pos_3d = world_to_camera(anim['positions'], R=cam['orientation'], t=cam['translation'])
-            pos_3d[:, 1:] -= pos_3d[:, :1] # Remove global offset, but keep trajectory in first position
+            pos_3d[:, 1:] -= pos_3d[:, :1] # Remove global offset, but keep trajectory inh first position
             positions_3d.append(pos_3d)
         anim['positions_3d'] = positions_3d
 
@@ -167,10 +166,14 @@ else:
     model_pos_train = TemporalModel(poses_valid_2d[0].shape[-2], poses_valid_2d[0].shape[-1], poses_valid[0].shape[-2],
                                 filter_widths=filter_widths, causal=args.causal, dropout=args.dropout, channels=args.channels,
                                 dense=args.dense)
-    
+
+print("parameters : ", poses_valid_2d[0].shape[-2], poses_valid_2d[0].shape[-1], poses_valid[0].shape[-2])
+print(filter_widths, args.causal, args.dropout, args.channels, args.dense)
 model_pos = TemporalModel(poses_valid_2d[0].shape[-2], poses_valid_2d[0].shape[-1], poses_valid[0].shape[-2],
                             filter_widths=filter_widths, causal=args.causal, dropout=args.dropout, channels=args.channels,
                             dense=args.dense)
+
+
 
 receptive_field = model_pos.receptive_field()
 print('INFO: Receptive field: {} frames'.format(receptive_field))
