@@ -1,1 +1,4 @@
 checkpoint
+__pycache__
+data/data_*.npz
+data/h36m.zip
